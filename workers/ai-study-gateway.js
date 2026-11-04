@@ -1,6 +1,8 @@
 const ALLOWED_ORIGIN = "https://kdcamir5-crypto.github.io";
 const MAX_IMAGE_BASE64 = 5_500_000;
 const MAX_QUESTION_CHARS = 8_000;
+const GEMINI_MODEL = "gemini-3.8-flash";
+const MAX_RETRIES = 3;
 
 function response(data, status = 200, origin = ALLOWED_ORIGIN) {
   return new Response(JSON.stringify(data), {
@@ -47,6 +49,10 @@ async function verifyFirebaseToken(token, projectId) {
   );
   if (!valid) throw new Error("Invalid token signature");
   return claims;
+}
+
+async function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export default {
@@ -104,27 +110,45 @@ export default {
     }];
     if (imageData) parts.push({ inlineData: { mimeType, data: imageData } });
 
+    const requestBody = JSON.stringify({
+      contents: [{ role: "user", parts }],
+      generationConfig: { temperature: 0.25, maxOutputTokens: 2048 }
+    });
+    let aiResponse;
+    let payload = {};
+
     try {
-      const aiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
-        body: JSON.stringify({
-          contents: [{ role: "user", parts }],
-          generationConfig: { temperature: 0.25, maxOutputTokens: 2048 }
-        })
-      });
-      const payload = await aiResponse.json().catch(() => ({}));
+      for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+        aiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
+          body: requestBody
+        });
+        payload = await aiResponse.json().catch(() => ({}));
+
+        // Retry temporary Gemini server overloads. Do not retry invalid requests or exhausted quota.
+        if (aiResponse.ok || ![500, 502, 503, 504].includes(aiResponse.status) || attempt === MAX_RETRIES) break;
+        await wait(700 * (2 ** attempt));
+      }
+
       if (!aiResponse.ok) {
         const providerMessage = typeof payload.error?.message === "string" ? payload.error.message.slice(0, 240) : "No provider message returned.";
+        const temporarilyUnavailable = [500, 502, 503, 504].includes(aiResponse.status);
         return response({
-          error: aiResponse.status === 429 ? "AI free usage limit reached for now. Please try again later." : "Gemini rejected the request.",
+          error: temporarilyUnavailable
+            ? "Gemini is temporarily busy. We tried again automatically; please retry shortly."
+            : aiResponse.status === 429
+              ? "AI usage limit reached for now. Please try again later."
+              : "Gemini could not process this request.",
           diagnostic: {
             httpStatus: aiResponse.status,
             code: payload.error?.status || payload.error?.code || "UNKNOWN",
-            message: providerMessage
+            message: providerMessage,
+            attempts: temporarilyUnavailable ? MAX_RETRIES + 1 : 1
           }
         }, aiResponse.status === 429 ? 429 : 502, origin);
       }
+
       const answer = payload.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("").trim();
       if (!answer) return response({ error: "AI returned an empty answer. Try a clearer question.", diagnostic: { finishReason: payload.candidates?.[0]?.finishReason || "NO_CANDIDATE" } }, 502, origin);
       return response({ answer }, 200, origin);
