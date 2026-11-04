@@ -54,12 +54,10 @@ export default {
     const url = new URL(request.url);
     const origin = request.headers.get("Origin") || "";
 
-    // Public health check: allow opening this URL directly in a browser.
     if (request.method === "GET" && url.pathname === "/health") {
       return response({ ok: true, service: "SkillVerse AI Study Gateway" }, 200, origin === ALLOWED_ORIGIN ? origin : "*");
     }
 
-    // All actual AI requests remain restricted to the official GitHub Pages origin.
     if (origin !== ALLOWED_ORIGIN) return response({ error: "Origin not allowed" }, 403);
     if (request.method === "OPTIONS") {
       return new Response(null, {
@@ -72,10 +70,8 @@ export default {
         }
       });
     }
-    if (request.method !== "POST" || url.pathname !== "/solve") {
-      return response({ error: "Not found" }, 404, origin);
-    }
-    if (!env.GEMINI_API_KEY) return response({ error: "AI service is not configured yet." }, 503, origin);
+    if (request.method !== "POST" || url.pathname !== "/solve") return response({ error: "Not found" }, 404, origin);
+    if (!env.GEMINI_API_KEY) return response({ error: "AI service is not configured yet.", diagnostic: "MISSING_API_SECRET" }, 503, origin);
 
     const authHeader = request.headers.get("Authorization") || "";
     const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
@@ -117,12 +113,20 @@ export default {
           generationConfig: { temperature: 0.25, maxOutputTokens: 2048 }
         })
       });
-      const payload = await aiResponse.json();
+      const payload = await aiResponse.json().catch(() => ({}));
       if (!aiResponse.ok) {
-        return response({ error: aiResponse.status === 429 ? "AI free usage limit reached for now. Please try again later." : "AI service could not process this question. Please try again." }, aiResponse.status === 429 ? 429 : 502, origin);
+        const providerMessage = typeof payload.error?.message === "string" ? payload.error.message.slice(0, 240) : "No provider message returned.";
+        return response({
+          error: aiResponse.status === 429 ? "AI free usage limit reached for now. Please try again later." : "Gemini rejected the request.",
+          diagnostic: {
+            httpStatus: aiResponse.status,
+            code: payload.error?.status || payload.error?.code || "UNKNOWN",
+            message: providerMessage
+          }
+        }, aiResponse.status === 429 ? 429 : 502, origin);
       }
       const answer = payload.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("").trim();
-      if (!answer) return response({ error: "AI returned an empty answer. Try a clearer question." }, 502, origin);
+      if (!answer) return response({ error: "AI returned an empty answer. Try a clearer question.", diagnostic: { finishReason: payload.candidates?.[0]?.finishReason || "NO_CANDIDATE" } }, 502, origin);
       return response({ answer }, 200, origin);
     } catch {
       return response({ error: "Could not connect to AI service. Please try again." }, 502, origin);
