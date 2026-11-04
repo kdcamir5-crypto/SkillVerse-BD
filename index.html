@@ -39,6 +39,6 @@ button{font:inherit;color:inherit;cursor:pointer;border:0} .app{max-width:540px;
 <script>
 const toast=document.getElementById('toast');let toastTimer;
 function showToast(message){toast.textContent=message;toast.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.style.display='none',2200)}
-document.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',()=>{const page=el.dataset.page;if(page==='AI Study'){location.href='ai-study.html';return}if(page==='Home'){document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page==='Home'));return}document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));showToast(page+' section will be added in the next development step.')}))
+document.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',()=>{const page=el.dataset.page;if(page==='AI Study'){location.href='ai-study.html';return}if(page==='Quiz'){location.href='quiz.html';return}if(page==='Home'){document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page==='Home'));return}document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));showToast(page+' section will be added in the next development step.')}))
 </script>
 </body></html>
