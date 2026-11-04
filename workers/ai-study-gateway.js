@@ -53,7 +53,7 @@ export default {
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
     if (origin !== ALLOWED_ORIGIN) return response({ error: "Origin not allowed" }, 403);
-    if (request.method === "OPTIONS") return response({}, 204, origin);
+    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Methods": "POST, GET, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, Authorization", "Vary": "Origin" } });
     if (request.method === "GET" && new URL(request.url).pathname === "/health") {
       return response({ ok: true, service: "SkillVerse AI Study Gateway" }, 200, origin);
     }
