@@ -51,13 +51,28 @@ async function verifyFirebaseToken(token, projectId) {
 
 export default {
   async fetch(request, env) {
+    const url = new URL(request.url);
     const origin = request.headers.get("Origin") || "";
-    if (origin !== ALLOWED_ORIGIN) return response({ error: "Origin not allowed" }, 403);
-    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Methods": "POST, GET, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, Authorization", "Vary": "Origin" } });
-    if (request.method === "GET" && new URL(request.url).pathname === "/health") {
-      return response({ ok: true, service: "SkillVerse AI Study Gateway" }, 200, origin);
+
+    // Public health check: allow opening this URL directly in a browser.
+    if (request.method === "GET" && url.pathname === "/health") {
+      return response({ ok: true, service: "SkillVerse AI Study Gateway" }, 200, origin === ALLOWED_ORIGIN ? origin : "*");
     }
-    if (request.method !== "POST" || new URL(request.url).pathname !== "/solve") {
+
+    // All actual AI requests remain restricted to the official GitHub Pages origin.
+    if (origin !== ALLOWED_ORIGIN) return response({ error: "Origin not allowed" }, 403);
+    if (request.method === "OPTIONS") {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          "Access-Control-Allow-Origin": origin,
+          "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          "Vary": "Origin"
+        }
+      });
+    }
+    if (request.method !== "POST" || url.pathname !== "/solve") {
       return response({ error: "Not found" }, 404, origin);
     }
     if (!env.GEMINI_API_KEY) return response({ error: "AI service is not configured yet." }, 503, origin);
@@ -65,9 +80,8 @@ export default {
     const authHeader = request.headers.get("Authorization") || "";
     const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
     if (!token) return response({ error: "Please sign in before asking AI." }, 401, origin);
-    let claims;
     try {
-      claims = await verifyFirebaseToken(token, "skillverse-bd");
+      await verifyFirebaseToken(token, "skillverse-bd");
     } catch {
       return response({ error: "Your login session is invalid or expired. Please sign in again." }, 401, origin);
     }
@@ -109,7 +123,7 @@ export default {
       }
       const answer = payload.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("").trim();
       if (!answer) return response({ error: "AI returned an empty answer. Try a clearer question." }, 502, origin);
-      return response({ answer, requestId: claims.sub }, 200, origin);
+      return response({ answer }, 200, origin);
     } catch {
       return response({ error: "Could not connect to AI service. Please try again." }, 502, origin);
     }
