@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b1020">
+<title>AI Study | SkillVerse BD</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2d;--panel2:#18233a;--line:#26334d;--text:#f2f5ff;--muted:#97a6c2;--purple:#8b5cf6;--blue:#4f8cff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 85% -10%,#2a2057 0,transparent 38%),var(--bg);color:var(--text);font:14px/1.45 Inter,system-ui,sans-serif;min-height:100dvh}.app{max-width:540px;margin:auto;padding:18px 17px calc(35px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:23px}.back{width:39px;height:39px;border:1px solid var(--line);background:var(--panel);border-radius:13px;font-size:20px}.brand{font-weight:800;font-size:17px}.brand span{color:#a78bfa}.subtitle{color:var(--muted);font-size:10px;letter-spacing:1px;text-transform:uppercase}.heading{font-size:25px;letter-spacing:-.7px;margin:0 0 5px;font-weight:800}.lead{color:var(--muted);margin:0 0 20px;font-size:13px}
+.panel{border:1px solid var(--line);background:linear-gradient(145deg,#151f34,#11192a);border-radius:19px;padding:16px;margin-bottom:14px}.label{font-size:12px;font-weight:700;display:block;margin-bottom:10px}.upload{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:9px;border:1px dashed #6753a7;background:#1a1c35;border-radius:15px;padding:22px 12px;text-align:center;min-height:140px}.upload .emoji{font-size:30px}.upload strong{font-size:13px}.upload small{color:var(--muted);font-size:11px}.upload input{max-width:100%;font-size:11px;color:var(--muted)}textarea,select{width:100%;color:var(--text);background:#0d1526;border:1px solid #2b3954;border-radius:12px;padding:12px;font:inherit;outline:none}textarea{resize:vertical;min-height:110px}select{height:44px}.field{margin-top:14px}.primary{width:100%;padding:13px 15px;border-radius:13px;background:linear-gradient(100deg,#9a70ff,#628eff);font-weight:800;font-size:13px;margin-top:16px}.notice{color:#c5b8ff;font-size:11px;line-height:1.5;margin-top:12px}.preview{display:none;max-width:100%;max-height:200px;border-radius:12px;margin:12px auto 0}.result{display:none}.result h3{margin:0 0 8px;font-size:15px}.result p{color:var(--muted);font-size:12px;margin:0}.resultbox{background:#0d1526;border-radius:12px;padding:14px;color:#dce4f7;white-space:pre-wrap;margin-top:10px;font-size:13px}
+</style>
+</head>
+<body><main class="app">
+<header class="top"><button class="back" onclick="location.href='index.html'" aria-label="Back to Home">‹</button><div><div class="brand">SkillVerse <span>BD</span></div><div class="subtitle">AI learning companion</div></div></header>
+<h1 class="heading">AI Study Helper ✦</h1><p class="lead">Upload a question photo or type your question for step-by-step learning.</p>
+<section class="panel"><label class="label" for="photo">Question Photo</label><label class="upload" for="photo"><span class="emoji">📸</span><strong>Choose a question image</strong><small>JPG, PNG or WEBP · Image preview available</small><input id="photo" type="file" accept="image/*"></label><img id="preview" class="preview" alt="Selected question preview">
+<div class="field"><label class="label" for="question">Or type your question</label><textarea id="question" placeholder="Write your question here… (Bangla or English)"></textarea></div>
+<div class="field"><label class="label" for="language">Explanation Language</label><select id="language"><option value="Bangla">বাংলা (Bangla)</option><option value="English">English</option><option value="Both">Bangla + English</option></select></div>
+<div class="field"><label class="label" for="level">Study Level</label><select id="level"><option>School</option><option>SSC</option><option>HSC</option><option>University</option><option>General</option></select></div>
+<button class="primary" id="solve">✦ Solve Question</button><p class="notice">This is the AI Study interface preview. AI answer processing will be connected securely in a later step.</p></section>
+<section class="panel result" id="result"><h3>Solution Preview</h3><p>Your question is ready for AI processing.</p><div class="resultbox" id="resulttext"></div></section>
+</main>
+<script>
+const photo=document.getElementById('photo'),preview=document.getElementById('preview'),question=document.getElementById('question');
+photo.addEventListener('change',()=>{const f=photo.files&&photo.files[0];if(!f){preview.style.display='none';return}if(!f.type.startsWith('image/')){alert('Please select an image file.');photo.value='';return}preview.src=URL.createObjectURL(f);preview.style.display='block'});
+document.getElementById('solve').addEventListener('click',()=>{if(!photo.files.length&&!question.value.trim()){alert('Please upload a question photo or type your question first.');return}const box=document.getElementById('result');document.getElementById('resulttext').textContent='Question submitted in '+document.getElementById('language').value+' · Level: '+document.getElementById('level').value+'\n\nAI connection will be enabled in the next backend milestone. Your input is not sent to any server yet.';box.style.display='block';box.scrollIntoView({behavior:'smooth',block:'nearest'})});
+</script></body></html>
