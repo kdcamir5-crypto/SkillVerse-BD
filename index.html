@@ -18,6 +18,16 @@ button{font:inherit;color:inherit;cursor:pointer;border:0} .app{max-width:540px;
 .bottom{position:fixed;bottom:0;left:0;right:0;z-index:5;background:#0c1322ee;backdrop-filter:blur(18px);border-top:1px solid #27334b;padding:10px 8px calc(10px + env(safe-area-inset-bottom));display:flex;justify-content:center}.nav{width:min(540px,100%);display:grid;grid-template-columns:repeat(5,1fr);gap:2px}.nav button{background:none;color:#8190ab;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;font-size:10px;font-weight:600}.nav .navicon{font-size:19px;line-height:1.2}.nav button.active{color:#b7a0ff}.nav button.active .navicon{filter:drop-shadow(0 0 7px #a78bfa66)}
 .toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:#27334d;border:1px solid #445575;border-radius:12px;padding:11px 15px;font-size:12px;display:none;z-index:8;max-width:90%;text-align:center}
 @media(min-width:540px){body{padding-bottom:0}.app{padding-top:24px}.hero{min-height:200px}}
+
+/* Global fixed bottom navigation */
+.bottom{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:9999!important;display:flex!important;justify-content:center!important;background:rgba(12,19,34,.96)!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid #27334b!important;padding:9px 8px calc(9px + env(safe-area-inset-bottom))!important}
+.bottom .nav{width:min(540px,100%)!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important}
+.bottom .nav button{min-width:0!important;background:none!important;border:0!important;color:#8190ab!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;padding:5px 2px!important;font:600 10px/1.2 Inter,system-ui,sans-serif!important;white-space:nowrap!important}
+.bottom .nav button .navicon{font-size:19px!important;line-height:1.2!important}
+.bottom .nav button.active{color:#b7a0ff!important}
+.bottom .nav button.active .navicon{filter:drop-shadow(0 0 7px #a78bfa66)}
+.app{padding-bottom:calc(108px + env(safe-area-inset-bottom))!important}
+@media print{.bottom{display:none!important}}
 </style>
 </head>
 <body>
