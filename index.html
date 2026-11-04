@@ -31,7 +31,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0} .app{max-width:540px;
 <button class="tile" data-page="Tools"><span class="tile-icon">📝</span><strong>Smart Notes</strong><small>Summaries made simple</small></button>
 <button class="tile" data-page="Tools"><span class="tile-icon">💼</span><strong>CV Maker</strong><small>Create a pro CV</small></button>
 </div></section>
-<section><div class="section-head"><h3>Daily Study Challenge</h3><button data-page="Quiz">View →</button></div><button class="challenge" style="width:100%;text-align:left" data-page="Quiz"><span class="challenge-icon">🔥</span><span class="challenge-text"><strong>Keep your learning streak</strong><small>Complete today's quiz and level up</small></span><span class="arrow">›</span></button></section>
+<section><div class="section-head"><h3>Daily Study Challenge</h3><button data-page="Daily Challenge">View →</button></div><button class="challenge" style="width:100%;text-align:left" data-page="Daily Challenge"><span class="challenge-icon">🔥</span><span class="challenge-text"><strong>Keep your learning streak</strong><small>Complete today's quiz and level up</small></span><span class="arrow">›</span></button></section>
 </main>
 <nav class="bottom" aria-label="Main navigation"><div class="nav">
 <button class="active" data-page="Home"><span class="navicon">⌂</span>Home</button><button data-page="AI Study"><span class="navicon">✦</span>AI Study</button><button data-page="Quiz"><span class="navicon">▤</span>Quiz</button><button data-page="Tools"><span class="navicon">▦</span>Tools</button><button data-page="Profile"><span class="navicon">♙</span>Profile</button>
@@ -52,6 +52,6 @@ onAuthStateChanged(auth,async user=>{
  greeting.textContent=name+'!';
  avatar.textContent=name.charAt(0).toUpperCase();
 });
-document.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',()=>{const page=el.dataset.page;if(page==='AI Study'){location.href='ai-study.html';return}if(page==='Quiz'){location.href='quiz.html';return}if(page==='Tools'){location.href='tools.html';return}if(page==='Profile'){location.href='profile.html';return}if(page==='Home'){document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page==='Home'));return}document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));showToast(page+' section will be added in the next development step.')}))
+document.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',()=>{const page=el.dataset.page;if(page==='AI Study'){location.href='ai-study.html';return}if(page==='Quiz'){location.href='quiz.html';return}if(page==='Daily Challenge'){location.href='daily-challenge.html';return}if(page==='Tools'){location.href='tools.html';return}if(page==='Profile'){location.href='profile.html';return}if(page==='Home'){document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page==='Home'));return}document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));showToast(page+' section will be added in the next development step.')}))
 </script>
 </body></html>
