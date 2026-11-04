@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<title>SkillVerse BD — Student AI Hub</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--surface:#121a2d;--surface2:#18233a;--line:#26334d;--text:#f2f5ff;--muted:#97a6c2;--purple:#8b5cf6;--blue:#4f8cff;--mint:#5eead4}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 85% -10%,#2a2057 0,transparent 38%),var(--bg);color:var(--text);font:14px/1.45 Inter,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100dvh}
+button{font:inherit;color:inherit;cursor:pointer;border:0} .app{max-width:540px;margin:auto;min-height:100dvh;padding:18px 17px calc(94px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}.brand{display:flex;align-items:center;gap:10px}.logo{width:39px;height:39px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#8b5cf6,#4f8cff);box-shadow:0 6px 22px #6545d455;font-weight:900;font-size:17px}.brand-name{font-size:17px;font-weight:800;letter-spacing:-.4px}.brand-name span{color:#a78bfa}.subbrand{font-size:10px;color:var(--muted);letter-spacing:1.6px;text-transform:uppercase}.avatar{width:39px;height:39px;border:1px solid #3b4965;background:#1c2941;border-radius:50%;display:grid;place-items:center;font-size:17px}
+.greeting{margin:0 0 5px;font-size:25px;letter-spacing:-.8px;font-weight:800}.greeting span{color:#b49aff}.welcome-note{margin:0 0 20px;color:var(--muted);font-size:13px}
+.hero{position:relative;overflow:hidden;border:1px solid #4b3d7b;border-radius:23px;padding:19px;background:linear-gradient(120deg,#24204a,#192747 70%,#18334a);margin-bottom:21px;min-height:190px}.hero:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-52px;top:-42px;background:radial-gradient(circle,#9d7aff44,transparent 70%)}.hero-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#c7b9ff;font-weight:700}.hero h2{font-size:21px;line-height:1.25;letter-spacing:-.5px;margin:9px 0 8px;max-width:265px}.hero p{margin:0;color:#c2cbe0;font-size:12px;max-width:250px}.hero-button{margin-top:15px;padding:10px 15px;border-radius:12px;background:linear-gradient(100deg,#9a70ff,#628eff);font-weight:700;font-size:12px;box-shadow:0 6px 18px #7656d633}.hero-art{position:absolute;right:18px;bottom:17px;width:104px;height:105px;display:grid;place-items:center;z-index:1}.orb{width:83px;height:83px;border-radius:50%;border:1px solid #b9a5ff66;background:radial-gradient(circle at 35% 30%,#bca7ff,#7553e9 42%,#2a2b6a 75%);box-shadow:0 0 30px #9874ff55;display:grid;place-items:center;font-size:36px}.spark{position:absolute;color:#d9d0ff;font-size:17px}.s1{top:0;right:5px}.s2{left:0;bottom:12px}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin:22px 1px 12px}.section-head h3{margin:0;font-size:15px;letter-spacing:-.2px}.section-head button{background:none;color:#b6a1ff;font-size:11px;font-weight:700}
+.quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.tile{border:1px solid var(--line);background:linear-gradient(145deg,#151f34,#11192a);border-radius:17px;padding:14px;text-align:left;min-height:110px;transition:transform .15s,border-color .15s}.tile:active{transform:scale(.98)}.tile:hover{border-color:#6e5bb4}.tile-icon{width:35px;height:35px;border-radius:11px;display:grid;place-items:center;font-size:18px;margin-bottom:10px;background:#292449}.tile:nth-child(2) .tile-icon{background:#173448}.tile:nth-child(3) .tile-icon{background:#3b2c21}.tile:nth-child(4) .tile-icon{background:#1e3a35}.tile strong{display:block;font-size:13px;margin-bottom:3px}.tile small{font-size:11px;color:var(--muted)}
+.challenge{border:1px solid var(--line);border-radius:17px;background:var(--surface);padding:15px;display:flex;align-items:center;gap:13px}.challenge-icon{width:43px;height:43px;border-radius:13px;background:#30244e;display:grid;place-items:center;font-size:20px;flex-shrink:0}.challenge-text{flex:1}.challenge-text strong{display:block;font-size:13px}.challenge-text small{color:var(--muted);font-size:11px}.arrow{color:#a78bfa;font-size:20px}
+.bottom{position:fixed;bottom:0;left:0;right:0;z-index:5;background:#0c1322ee;backdrop-filter:blur(18px);border-top:1px solid #27334b;padding:10px 8px calc(10px + env(safe-area-inset-bottom));display:flex;justify-content:center}.nav{width:min(540px,100%);display:grid;grid-template-columns:repeat(5,1fr);gap:2px}.nav button{background:none;color:#8190ab;display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 2px;font-size:10px;font-weight:600}.nav .navicon{font-size:19px;line-height:1.2}.nav button.active{color:#b7a0ff}.nav button.active .navicon{filter:drop-shadow(0 0 7px #a78bfa66)}
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:#27334d;border:1px solid #445575;border-radius:12px;padding:11px 15px;font-size:12px;display:none;z-index:8;max-width:90%;text-align:center}
+@media(min-width:540px){body{padding-bottom:0}.app{padding-top:24px}.hero{min-height:200px}}
+</style>
+</head>
+<body>
+<main class="app">
+<header class="top"><div class="brand"><div class="logo">SV</div><div><div class="brand-name">SkillVerse <span>BD</span></div><div class="subbrand">Your AI learning companion</div></div></div><button class="avatar" aria-label="Profile" data-page="Profile">👤</button></header>
+<section aria-label="Welcome"><h1 class="greeting">Hello, <span>Student!</span> 👋</h1><p class="welcome-note">Ready to learn something new today?</p></section>
+<section class="hero"><div class="hero-label">✦ AI Student Helper</div><h2>Learn smarter.<br>Achieve more.</h2><p>Get instant solutions with clear Bangla & English explanations.</p><button class="hero-button" data-page="AI Study">Solve a Question&nbsp; →</button><div class="hero-art"><span class="spark s1">✦</span><div class="orb">🧠</div><span class="spark s2">✧</span></div></section>
+<section><div class="section-head"><h3>Quick Access</h3><button data-page="Tools">Explore all →</button></div><div class="quick">
+<button class="tile" data-page="AI Study"><span class="tile-icon">📸</span><strong>Photo Solver</strong><small>Snap & solve questions</small></button>
+<button class="tile" data-page="Quiz"><span class="tile-icon">🎯</span><strong>Chapter Quiz</strong><small>Practice & test yourself</small></button>
+<button class="tile" data-page="Tools"><span class="tile-icon">📝</span><strong>Smart Notes</strong><small>Summaries made simple</small></button>
+<button class="tile" data-page="Tools"><span class="tile-icon">💼</span><strong>CV Maker</strong><small>Create a pro CV</small></button>
+</div></section>
+<section><div class="section-head"><h3>Daily Study Challenge</h3><button data-page="Quiz">View →</button></div><button class="challenge" style="width:100%;text-align:left" data-page="Quiz"><span class="challenge-icon">🔥</span><span class="challenge-text"><strong>Keep your learning streak</strong><small>Complete today's quiz and level up</small></span><span class="arrow">›</span></button></section>
+</main>
+<nav class="bottom" aria-label="Main navigation"><div class="nav">
+<button class="active" data-page="Home"><span class="navicon">⌂</span>Home</button><button data-page="AI Study"><span class="navicon">✦</span>AI Study</button><button data-page="Quiz"><span class="navicon">▤</span>Quiz</button><button data-page="Tools"><span class="navicon">▦</span>Tools</button><button data-page="Profile"><span class="navicon">♙</span>Profile</button>
+</div></nav><div class="toast" id="toast" role="status"></div>
+<script>
+const toast=document.getElementById('toast');let toastTimer;
+function showToast(message){toast.textContent=message;toast.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.style.display='none',2200)}
+document.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',()=>{const page=el.dataset.page;if(page==='Home'){document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page==='Home'));return}document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));showToast(page+' section will be added in the next development step.')}))
+</script>
+</body></html>
