@@ -131,6 +131,42 @@ export default {
         await wait(700 * (2 ** attempt));
       }
 
+      if (!aiResponse.ok && env.GROQ_API_KEY) {
+        // Gemini failed: use Groq Qwen 3.8 as a secondary text-and-vision provider.
+        let groqResponse;
+        let groqPayload = {};
+        try {
+          const tutorPrompt = `You are SkillVerse BD, a careful educational tutor. Solve the student's question accurately and teach step by step at the ${level} level. Explanation language: ${language}. For Bangla, answer in natural Bangla. For Both, explain in Bangla and English. Show formulas and intermediate steps where useful. If the image/question is unclear or missing information, say so rather than guessing. Structure answer with: Answer, Step-by-step explanation, and Key concept when appropriate. Student's typed question: ${question || "(Question is provided in the image.)"}`;
+          const groqContent = imageData
+            ? [
+                { type: "text", text: tutorPrompt },
+                { type: "image_url", image_url: { url: `data:${mimeType};base64,${imageData}` } }
+              ]
+            : tutorPrompt;
+          groqResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${env.GROQ_API_KEY}`
+            },
+            body: JSON.stringify({
+              model: "qwen/qwen3.8-27b",
+              messages: [{ role: "user", content: groqContent }],
+              temperature: 0.2,
+              max_tokens: 2048,
+              reasoning_effort: "none"
+            })
+          });
+          groqPayload = await groqResponse.json().catch(() => ({}));
+          const groqAnswer = groqPayload.choices?.[0]?.message?.content?.trim();
+          if (groqResponse.ok && groqAnswer) {
+            return response({ answer: groqAnswer, provider: "Groq Qwen 3.8" }, 200, origin);
+          }
+        } catch {
+          // Keep Gemini's diagnostic below; the user should receive one clean error.
+        }
+      }
+
       if (!aiResponse.ok) {
         const providerMessage = typeof payload.error?.message === "string" ? payload.error.message.slice(0, 240) : "No provider message returned.";
         const temporarilyUnavailable = [500, 502, 503, 504, 524].includes(aiResponse.status);
