@@ -36,9 +36,22 @@ button{font:inherit;color:inherit;cursor:pointer;border:0} .app{max-width:540px;
 <nav class="bottom" aria-label="Main navigation"><div class="nav">
 <button class="active" data-page="Home"><span class="navicon">⌂</span>Home</button><button data-page="AI Study"><span class="navicon">✦</span>AI Study</button><button data-page="Quiz"><span class="navicon">▤</span>Quiz</button><button data-page="Tools"><span class="navicon">▦</span>Tools</button><button data-page="Profile"><span class="navicon">♙</span>Profile</button>
 </div></nav><div class="toast" id="toast" role="status"></div>
-<script>
+<script type="module">
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import {getAuth,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {getFirestore,doc,getDoc} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import {firebaseConfig} from './firebase-config.js';
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const toast=document.getElementById('toast');let toastTimer;
 function showToast(message){toast.textContent=message;toast.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.style.display='none',2200)}
+onAuthStateChanged(auth,async user=>{
+ const greeting=document.querySelector('.greeting span'),avatar=document.querySelector('.avatar');
+ if(!user){greeting.textContent='Student!';avatar.textContent='👤';return}
+ let name=user.displayName||((user.email||'Student').split('@')[0]);
+ try{const snap=await getDoc(doc(db,'users',user.uid));if(snap.exists()){const profile=snap.data();if(profile.name&&profile.name.trim())name=profile.name.trim()}}catch(err){/* Keep the Firebase Auth name if profile read is unavailable. */}
+ greeting.textContent=name+'!';
+ avatar.textContent=name.charAt(0).toUpperCase();
+});
 document.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',()=>{const page=el.dataset.page;if(page==='AI Study'){location.href='ai-study.html';return}if(page==='Quiz'){location.href='quiz.html';return}if(page==='Tools'){location.href='tools.html';return}if(page==='Profile'){location.href='profile.html';return}if(page==='Home'){document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page==='Home'));return}document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));showToast(page+' section will be added in the next development step.')}))
 </script>
 </body></html>
