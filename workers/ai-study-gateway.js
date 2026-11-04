@@ -127,13 +127,13 @@ export default {
         payload = await aiResponse.json().catch(() => ({}));
 
         // Retry temporary Gemini server overloads. Do not retry invalid requests or exhausted quota.
-        if (aiResponse.ok || ![500, 502, 503, 504].includes(aiResponse.status) || attempt === MAX_RETRIES) break;
+        if (aiResponse.ok || ![500, 502, 503, 504, 524].includes(aiResponse.status) || attempt === MAX_RETRIES) break;
         await wait(700 * (2 ** attempt));
       }
 
       if (!aiResponse.ok) {
         const providerMessage = typeof payload.error?.message === "string" ? payload.error.message.slice(0, 240) : "No provider message returned.";
-        const temporarilyUnavailable = [500, 502, 503, 504].includes(aiResponse.status);
+        const temporarilyUnavailable = [500, 502, 503, 504, 524].includes(aiResponse.status);
         return response({
           error: temporarilyUnavailable
             ? "Gemini is temporarily busy. We tried again automatically; please retry shortly."
