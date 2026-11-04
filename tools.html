@@ -150,6 +150,16 @@
 
 /* PDF utility tools */
 .pdf-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.pdf-tool{min-width:0;background:#0d1526;border:1px solid #2b3954;border-radius:15px;padding:13px}.pdf-tool-icon{font-size:23px}.pdf-tool h3{font-size:14px;margin:5px 0}.pdf-tool p{font-size:11px;color:var(--muted);min-height:32px;margin:0 0 8px}.pdf-tool label{font-size:11px}.pdf-tool input,.pdf-tool select{font-size:11px;padding:9px}.pdf-action{font-size:11px;padding:10px 8px;margin-top:11px}.pdf-tool input[type=file]{padding:7px}.pdf-tools+.fileinfo{padding:10px;background:#0d1526;border:1px solid #2b3954;border-radius:10px;overflow-wrap:anywhere}@media(max-width:430px){.pdf-tools{grid-template-columns:1fr}.pdf-tool p{min-height:0}}
+
+/* Global fixed bottom navigation */
+.bottom{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:9999!important;display:flex!important;justify-content:center!important;background:rgba(12,19,34,.96)!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid #27334b!important;padding:9px 8px calc(9px + env(safe-area-inset-bottom))!important}
+.bottom .nav{width:min(540px,100%)!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important}
+.bottom .nav button{min-width:0!important;background:none!important;border:0!important;color:#8190ab!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;padding:5px 2px!important;font:600 10px/1.2 Inter,system-ui,sans-serif!important;white-space:nowrap!important}
+.bottom .nav button .navicon{font-size:19px!important;line-height:1.2!important}
+.bottom .nav button.active{color:#b7a0ff!important}
+.bottom .nav button.active .navicon{filter:drop-shadow(0 0 7px #a78bfa66)}
+.app{padding-bottom:calc(108px + env(safe-area-inset-bottom))!important}
+@media print{.bottom{display:none!important}}
 </style></head><body><main class="app">
 <header class="top"><button class="back" onclick="location.href='index.html'" aria-label="Back Home">‹</button><div><div class="brand">SkillVerse <span>BD</span></div><div class="subtitle">Smart utility hub</div></div></header>
 <h1 class="heading">Smart Tools ✨</h1><p class="lead">Useful study and career tools in one place.</p>
@@ -195,7 +205,7 @@
 <div class="fileinfo" id="pdfstatus" role="status" aria-live="polite">একটি টুল বেছে নিয়ে ফাইল নির্বাচন করুন।</div>
 <p class="hint">নোট: Compress PDF সব ফাইলে সমানভাবে আকার কমাতে নাও পারে—বিশেষ করে স্ক্যান করা ছবির PDF-এ। বড় ফাইল প্রসেস হতে সময় লাগতে পারে।</p>
 </section>
-</main><script>
+</main><nav class="bottom" aria-label="Main navigation"><div class="nav"><button type="button" data-page="Home" class="" aria-label="Home" onclick="location.href='index.html'"><span class="navicon">⌂</span>Home</button><button type="button" data-page="AI Study" class="" aria-label="AI Study" onclick="location.href='ai-study.html'"><span class="navicon">✦</span>AI Study</button><button type="button" data-page="Quiz" class="" aria-label="Quiz" onclick="location.href='quiz.html'"><span class="navicon">▤</span>Quiz</button><button type="button" data-page="Tools" class="active" aria-label="Tools" onclick="location.href='tools.html'"><span class="navicon">▦</span>Tools</button><button type="button" data-page="Profile" class="" aria-label="Profile" onclick="location.href='profile.html'"><span class="navicon">♙</span>Profile</button></div></nav><script>
 const panels={notes:document.getElementById('notespanel'),cv:document.getElementById('cvpanel'),pdf:document.getElementById('pdfpanel')};document.querySelectorAll('[data-tool]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tool]').forEach(x=>x.classList.toggle('active',x===b));Object.entries(panels).forEach(([key,p])=>p.classList.toggle('hidden',key!==b.dataset.tool))}));
 const noteResult=document.getElementById('noteresult'),copyNote=document.getElementById('copynote'),makeNote=document.getElementById('makenote');let generatedNote='',signedInUser=null;
 import('./firebase-config.js').then(async({firebaseConfig})=>{const {initializeApp,getApps}=await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');const {getAuth,onAuthStateChanged}=await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');const app=getApps().length?getApps()[0]:initializeApp(firebaseConfig);onAuthStateChanged(getAuth(app),u=>{signedInUser=u})});
