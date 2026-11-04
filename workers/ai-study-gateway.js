@@ -131,6 +131,7 @@ export default {
         await wait(700 * (2 ** attempt));
       }
 
+      let groqDiagnostic = null;
       if (!aiResponse.ok && env.GROQ_API_KEY) {
         // Gemini failed: use Groq Qwen 3.8 as a secondary text-and-vision provider.
         let groqResponse;
@@ -162,9 +163,18 @@ export default {
           if (groqResponse.ok && groqAnswer) {
             return response({ answer: groqAnswer, provider: "Groq Qwen 3.8" }, 200, origin);
           }
-        } catch {
-          // Keep Gemini's diagnostic below; the user should receive one clean error.
+          groqDiagnostic = {
+            httpStatus: groqResponse.status,
+            code: groqPayload.error?.code || groqPayload.error?.type || "UNKNOWN",
+            message: typeof groqPayload.error?.message === "string"
+              ? groqPayload.error.message.slice(0, 240)
+              : "Groq returned no answer."
+          };
+        } catch (groqError) {
+          groqDiagnostic = { httpStatus: 0, code: "NETWORK_ERROR", message: "Could not reach Groq API." };
         }
+      } else if (!aiResponse.ok) {
+        groqDiagnostic = { httpStatus: 0, code: "MISSING_GROQ_API_KEY", message: "GROQ_API_KEY secret is not available in this deployed Worker." };
       }
 
       if (!aiResponse.ok) {
@@ -180,7 +190,8 @@ export default {
             httpStatus: aiResponse.status,
             code: payload.error?.status || payload.error?.code || "UNKNOWN",
             message: providerMessage,
-            attempts: temporarilyUnavailable ? MAX_RETRIES + 1 : 1
+            attempts: temporarilyUnavailable ? MAX_RETRIES + 1 : 1,
+            groq: groqDiagnostic
           }
         }, aiResponse.status === 429 ? 429 : 502, origin);
       }
