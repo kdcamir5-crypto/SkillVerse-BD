@@ -53,7 +53,7 @@ async function verifyFirebaseToken(token, projectId) {
 
   if (
     claims.aud !== projectId ||
-    claims.iss !== \`https://securetoken.google.com/\${projectId}\` ||
+    claims.iss !== `https://securetoken.google.com/${projectId}` ||
     typeof claims.sub !== "string" ||
     !claims.sub ||
     claims.exp <= now ||
@@ -103,15 +103,15 @@ async function wait(ms) {
 }
 
 function buildTutorPrompt(question, language, level) {
-  return \`You are SkillVerse BD, a careful educational tutor.
-Solve the student's question accurately and teach step by step at the \${level} level.
-Explanation language: \${language}.
+  return `You are SkillVerse BD, a careful educational tutor.
+Solve the student's question accurately and teach step by step at the ${level} level.
+Explanation language: ${language}.
 For Bangla, answer in natural Bangla.
 For Both, explain in Bangla and English.
 Show formulas and intermediate steps where useful.
 If the image/question is unclear or missing information, say so rather than guessing.
 Structure answer with: Answer, Step-by-step explanation, and Key concept when appropriate.
-Student's typed question: \${question || "(Question is provided in the image.)"}\`;
+Student's typed question: ${question || "(Question is provided in the image.)"}`;
 }
 
 function buildOpenAIContent(prompt, imageData, mimeType) {
@@ -125,7 +125,7 @@ function buildOpenAIContent(prompt, imageData, mimeType) {
     {
       type: "image_url",
       image_url: {
-        url: \`data:\${mimeType};base64,\${imageData}\`
+        url: `data:${mimeType};base64,${imageData}`
       }
     }
   ];
@@ -175,7 +175,7 @@ async function callOpenAICompatible({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": \`Bearer \${apiKey}\`
+          "Authorization": `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model,
@@ -274,7 +274,7 @@ async function callGemini({
   for (let attempt = 1; attempt <= attempts; attempt++) {
     try {
       const apiResponse = await fetch(
-        \`https://generativelanguage.googleapis.com/v1beta/models/\${GEMINI_MODEL}:generateContent\`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
         {
           method: "POST",
           headers: {
