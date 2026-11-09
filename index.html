@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0b1020">
+<meta name="theme-color" content="#E9ECEF">
 <title>SkillVerse BD — Student AI Hub</title>
 <style>
 :root{color-scheme:dark;--bg:#0b1020;--surface:#121a2d;--surface2:#18233a;--line:#26334d;--text:#f2f5ff;--muted:#97a6c2;--purple:#8b5cf6;--blue:#4f8cff;--mint:#5eead4}
@@ -28,6 +28,27 @@ button{font:inherit;color:inherit;cursor:pointer;border:0} .app{max-width:540px;
 .bottom .nav button.active .navicon{filter:drop-shadow(0 0 7px #a78bfa66)}
 .app{padding-bottom:calc(108px + env(safe-area-inset-bottom))!important}
 @media print{.bottom{display:none!important}}
+
+/* SkillVerse BD — LearnFlow-inspired soft study UI */
+:root{color-scheme:light;--bg:#E9ECEF;--surface:#FFFFFF;--surface2:#F8FAFC;--line:#E2E8F0;--text:#1E293B;--muted:#64748B;--purple:#6366F1;--blue:#4F75FF;--mint:#64B5F6}
+body{background:radial-gradient(ellipse at 85% -10%,#dbeafe 0,transparent 38%),#E9ECEF;color:#1E293B;font-family:'Plus Jakarta Sans',Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+.app{max-width:410px;padding:18px 16px calc(112px + env(safe-area-inset-bottom))!important}
+.top{margin-bottom:22px}.logo{background:linear-gradient(135deg,#4F75FF,#6366F1);box-shadow:0 6px 20px #4f75ff2b}.brand-name span{color:#6366F1}.subbrand{color:#94A3B8;letter-spacing:1.1px}
+.avatar{border:1px solid #E2E8F0;background:#fff;color:#4F75FF;box-shadow:0 3px 12px #1e293b0a}
+.greeting{font-size:22px;color:#1E293B;letter-spacing:-.6px}.greeting span{color:#4F75FF}.welcome-note{color:#64748B;font-size:12px;margin-bottom:18px}
+.hero{border:0;border-radius:22px;padding:20px;background:linear-gradient(125deg,#4F75FF 0%,#6366F1 58%,#7C6CF2 100%);box-shadow:0 10px 26px #4f75ff24;margin-bottom:22px;min-height:184px}
+.hero:after{background:radial-gradient(circle,#ffffff30,transparent 70%)}.hero-label{color:#E0E7FF}.hero h2{font-size:21px;color:#fff}.hero p{color:#EEF2FF}.hero-button{background:#fff;color:#4F75FF;box-shadow:0 5px 15px #1e293b14;border-radius:12px}.orb{border:1px solid #ffffff50;background:radial-gradient(circle at 35% 30%,#fff,#c7d2fe 42%,#6366f1 75%);box-shadow:0 0 28px #ffffff25}
+.section-head{margin:21px 1px 12px}.section-head h3{font-size:15px;color:#1E293B}.section-head button{color:#4F75FF}
+.quick{gap:12px}.tile{background:#fff;border:1px solid #E8EDF5;border-radius:17px;padding:14px;min-height:126px;box-shadow:0 5px 16px #1e293b08;transition:transform .15s,border-color .15s,box-shadow .15s}
+.tile:hover{border-color:#C7D2FE;box-shadow:0 8px 20px #4f75ff12}.tile:active{transform:scale(.98)}
+.tile-icon{width:40px;height:40px;border-radius:12px;background:#E0E7FF!important;color:#4F75FF;display:grid;place-items:center}
+.tile:nth-child(2) .tile-icon{background:#FFE4E6!important}.tile:nth-child(3) .tile-icon{background:#DBEAFE!important}.tile:nth-child(4) .tile-icon{background:#EDE9FE!important}
+.tile strong{font-size:13px;color:#1E293B}.tile small{color:#64748B;font-size:11px}
+.challenge{border:1px solid #E8EDF5;border-radius:17px;background:#fff;padding:15px;box-shadow:0 5px 16px #1e293b08}.challenge-icon{background:#FCE7F3;color:#FF6B6B}.challenge-text strong{color:#1E293B}.challenge-text small{color:#64748B}.arrow{color:#4F75FF}
+.bottom{left:50%!important;right:auto!important;bottom:10px!important;transform:translateX(-50%);width:min(410px,calc(100% - 24px))!important;background:rgba(255,255,255,.94)!important;border:1px solid #E8EDF5!important;border-radius:22px!important;box-shadow:0 8px 30px #1e293b12!important;backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;padding:8px 7px calc(8px + env(safe-area-inset-bottom))!important}
+.bottom .nav{width:100%!important}.bottom .nav button{color:#94A3B8!important;font-size:10px!important}.bottom .nav button.active{color:#4F75FF!important}.bottom .nav button.active .navicon{filter:drop-shadow(0 0 6px #4f75ff30)}
+.toast{background:#1E293B;border:1px solid #334155}
+@media(min-width:540px){.app{padding-top:24px}.hero{min-height:190px}.bottom{width:min(410px,calc(100% - 24px))!important}}
 </style>
 </head>
 <body>
