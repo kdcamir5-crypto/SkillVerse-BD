@@ -13,6 +13,13 @@ body[data-theme="purple"]{background:#f1edf7;color:#31234a}body[data-theme="purp
 .bottom .nav button.active .navicon{filter:drop-shadow(0 0 7px #a78bfa66)}
 .app{padding-bottom:calc(108px + env(safe-area-inset-bottom))!important}
 @media print{.bottom{display:none!important}}
+
+/* Fix: ensure the shared bottom bar spans the complete viewport */
+html,body{min-width:0!important;width:100%!important;}
+body{padding-bottom:0!important;}
+nav.bottom{position:fixed!important;inset-inline:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;max-width:none!important;min-width:100vw!important;margin:0!important;transform:none!important;box-sizing:border-box!important;z-index:2147483000!important;}
+nav.bottom>.nav{width:100%!important;max-width:540px!important;margin:0 auto!important;flex:0 0 min(540px,100%)!important;}
+nav.bottom>.nav>button{display:flex!important;visibility:visible!important;}
 </style><script src="theme.js"></script><link rel="stylesheet" href="theme.css"></head><body><main class="app"><header class="top"><div class="logo">♜</div><div><div class="brand">SkillVerse <span>BD</span></div><div class="subtitle">YOUR LEARNING COMPANION</div></div></header><h1 class="heading">Student Rankings 🏆</h1><p class="lead">Learn, practice and climb the leaderboard with the SkillVerse community.</p>
 <section class="hero"><div class="rank-circle" id="myrank">—</div><div class="eyebrow">YOUR LEARNING JOURNEY</div><h2 id="myname">Welcome, Student!</h2><p id="mydetail">Sign in and complete quizzes to begin earning rank points.</p><div style="clear:both"></div></section>
 <div class="stats"><div class="stat"><strong id="myScore">0</strong><span>Quiz Points</span></div><div class="stat"><strong id="myQuestions">0</strong><span>Questions Solved</span></div><div class="stat"><strong id="myTime">0m</strong><span>Study Time</span></div></div>
