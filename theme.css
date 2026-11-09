@@ -1,0 +1,38 @@
+/* SkillVerse BD — shared design layer (loaded after each page's own styles). */
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+:root{--bg:#F5F6FB;--card:#FFFFFF;--line:#E3E6F2;--text:#1B1F3B;--muted:#5F6588;--primary:#4F46E5;--tint:#EEF0FF;--ok-bg:#E6F7F0;--ok-tx:#064E3B;--no-bg:#FFE8EF;--no-tx:#7A0F32;color-scheme:light}
+[data-theme="purple"]{--primary:#7C3AED;--tint:#F1EAFE}
+[data-theme="dark"]{--bg:#0B1020;--card:#121A2D;--line:#26334D;--text:#F2F5FF;--muted:#A3B0CC;--primary:#6D5EF5;--tint:#1C2547;--ok-bg:#0F2E24;--ok-tx:#B7F0D9;--no-bg:#3A1223;--no-tx:#FFC2D6;color-scheme:dark}
+html,body{background:var(--bg)!important;color:var(--text)!important;font-family:'Hind Siliguri',Inter,system-ui,sans-serif!important}
+button,input,select,textarea{font-family:inherit!important}
+.brand-name span,.brand span,.greeting span{color:var(--primary)!important}
+.subbrand,.subtitle,.muted,.lead,.desc,.notice,.hint,.welcome-note,.tile small,.challenge-text small,.info span{color:var(--muted)!important}
+.heading,.greeting,.panel h3,.tile strong,.challenge-text strong,.info,.section-head h3{color:var(--text)!important}
+.section-head button{color:var(--primary)!important}
+.panel,.qcard,.tile,.challenge,.profilehero,.resultbox,.historyitem,.stat,.pdf-tool,.upload,.settings-sheet{background:var(--card)!important;border:1px solid var(--line)!important;border-radius:20px!important;color:var(--text)!important;box-shadow:none!important}
+.upload{border:2px dashed var(--line)!important}
+.hero{background:var(--primary)!important;border:0!important;border-radius:24px!important;color:#fff!important}
+.hero:after{display:none!important}
+.hero h2,.hero p,.hero-label{color:#fff!important}
+.hero-button{background:#fff!important;color:var(--primary)!important;box-shadow:none!important;border-radius:14px!important;font-size:14px!important}
+.orb{background:rgba(255,255,255,.18)!important;border:0!important;box-shadow:none!important}
+.logo,.avatar{background:var(--primary)!important;color:#fff!important;border:0!important;box-shadow:none!important}
+.tile-icon,.challenge-icon{background:var(--tint)!important;color:var(--primary)!important}
+.primary{background:var(--primary)!important;color:#fff!important;border:0!important;border-radius:16px!important;min-height:52px;box-shadow:none!important}
+.secondary{background:var(--card)!important;color:var(--text)!important;border:1px solid var(--line)!important;border-radius:16px!important}
+input,select,textarea{background:var(--card)!important;color:var(--text)!important;border:1px solid var(--line)!important;border-radius:14px!important}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--primary)!important;outline-offset:1px}
+.back{background:var(--card)!important;border:1px solid var(--line)!important;color:var(--text)!important;border-radius:12px!important;min-width:40px;min-height:40px}
+.tool{background:var(--card)!important;color:var(--text)!important;border:1px solid var(--line)!important;border-radius:14px!important}
+.tool.active{background:var(--primary)!important;color:#fff!important;border-color:var(--primary)!important}
+.option{background:var(--card)!important;border:1.5px solid var(--line)!important;color:var(--text)!important;border-radius:16px!important;min-height:52px}
+.option.selected{border-color:var(--primary)!important;background:var(--tint)!important}
+.option.correct{border-color:#0E9F6E!important;background:var(--ok-bg)!important;color:var(--ok-tx)!important}
+.option.wrong{border-color:#D6336C!important;background:var(--no-bg)!important;color:var(--no-tx)!important}
+.explanation{background:var(--tint)!important;color:var(--text)!important;border-radius:16px!important}
+.timer{background:var(--tint)!important;color:var(--primary)!important;border-radius:999px!important;padding:6px 12px!important;font-weight:600}
+.bottom{background:var(--card)!important;border-top:1px solid var(--line)!important;backdrop-filter:none!important}
+.bottom .nav button{color:var(--muted)!important;min-height:48px;font-size:11px!important}
+.bottom .nav button.active{color:var(--primary)!important;font-weight:700!important;filter:none!important}
+.bottom .nav button svg{width:22px;height:22px;display:block}
+@media print{html,body{background:#fff!important}.bottom{display:none!important}}
