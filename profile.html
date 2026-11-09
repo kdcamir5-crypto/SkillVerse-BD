@@ -44,6 +44,16 @@ body{padding-bottom:0!important;}
 nav.bottom{position:fixed!important;inset-inline:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;max-width:none!important;min-width:100vw!important;margin:0!important;transform:none!important;box-sizing:border-box!important;z-index:2147483000!important;}
 nav.bottom>.nav{width:100%!important;max-width:540px!important;margin:0 auto!important;flex:0 0 min(540px,100%)!important;}
 nav.bottom>.nav>button{display:flex!important;visibility:visible!important;}
+
+/* Permanent fixed bottom navigation bar */
+nav.sv-fixed-bottom{position:fixed!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;max-width:none!important;min-width:0!important;transform:none!important;margin:0!important;box-sizing:border-box!important;z-index:2147483647!important;display:flex!important;justify-content:center!important;align-items:center!important;background:#fff!important;border:1px solid #e1e5f0!important;border-bottom:0!important;border-radius:20px 20px 0 0!important;box-shadow:0 -4px 18px rgba(30,41,59,.08)!important;padding:8px 8px calc(8px + env(safe-area-inset-bottom))!important;}
+nav.sv-fixed-bottom .sv-nav-inner{width:100%!important;max-width:540px!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:0!important;margin:0 auto!important;}
+nav.sv-fixed-bottom button{appearance:none!important;min-width:0!important;width:100%!important;height:48px!important;margin:0!important;padding:3px 0!important;border:0!important;border-radius:0!important;background:transparent!important;color:#64708f!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;font:500 11px/1.2 Inter,system-ui,sans-serif!important;white-space:nowrap!important;box-shadow:none!important;}
+nav.sv-fixed-bottom button .sv-nav-icon{font-size:20px!important;line-height:1!important;display:block!important;}
+nav.sv-fixed-bottom button.sv-nav-plus .sv-nav-icon{font-size:23px!important;color:#4f75ff!important;}
+nav.sv-fixed-bottom button:active{opacity:.75!important;}
+body{padding-bottom:calc(72px + env(safe-area-inset-bottom))!important;}
+@media print{nav.sv-fixed-bottom{display:none!important}}
 </style><script src="theme.js"></script><link rel="stylesheet" href="theme.css"></head><body><main class="app">
 <header class="top"><button class="back" onclick="location.href='index.html'" aria-label="Back Home">‹</button><div><div class="brand">SkillVerse <span>BD</span></div><div class="subtitle">Your learning profile</div></div></header>
 <h1 class="heading">My Profile 👤</h1><p class="lead">Manage your personal details and learning preferences.</p>
@@ -67,4 +77,10 @@ onAuthStateChanged(auth,async user=>{currentUser=user;if(user){document.getEleme
 document.getElementById('profileform').onsubmit=async e=>{e.preventDefault();const data=values();try{localStorage.setItem('skillverse-profile',JSON.stringify(data))}catch(err){}if(!currentUser){status.textContent='Profile saved on this device. Sign in to sync it to Firebase.';refresh();return}status.textContent='Saving profile to Firebase…';try{await setDoc(doc(db,'users',currentUser.uid),{...data,uid:currentUser.uid,email:currentUser.email||data.email,updatedAt:serverTimestamp()},{merge:true});status.textContent='✓ Profile saved securely to your Firebase account.'}catch(err){status.textContent=err.code==='permission-denied'?'Save blocked by Firestore Rules. Verify users/{uid} permissions.':'Could not save cloud profile. Please check your connection.'}refresh()};
 document.getElementById('signout').onclick=async()=>{try{await signOut(auth);status.textContent='You have signed out.'}catch(err){status.textContent='Sign out failed. Please try again.'}};
 document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{const pages={'Home':'index.html','AI Study':'ai-study.html','Quiz':'quiz.html','Tools':'tools.html','Profile':'profile.html'};location.href=pages[b.dataset.page]});
-</script></body></html>
+</script><nav class="sv-fixed-bottom" aria-label="Main navigation"><div class="sv-nav-inner">
+<button onclick="location.href='index.html'" aria-label="Home"><span class="sv-nav-icon">⌂</span>Home</button>
+<button onclick="location.href='pdf.html'" aria-label="PDF"><span class="sv-nav-icon">▤</span>PDF</button>
+<button class="sv-nav-plus" onclick="location.href='scanner.html'" aria-label="Camera Scanner"><span class="sv-nav-icon">＋</span></button>
+<button onclick="location.href='rank.html'" aria-label="Rank"><span class="sv-nav-icon">♜</span>Rank</button>
+<button onclick="location.href='profile.html'" aria-label="Profile"><span class="sv-nav-icon">♙</span>Profile</button>
+</div></nav></body></html>
