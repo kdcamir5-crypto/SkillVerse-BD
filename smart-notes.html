@@ -181,6 +181,13 @@ body{background:linear-gradient(180deg,#E9ECEF,#F8FAFC 58%,#E9ECEF)!important;co
 .bottom .nav button.active .navicon{filter:drop-shadow(0 0 7px #a78bfa66)}
 .app{padding-bottom:calc(108px + env(safe-area-inset-bottom))!important}
 @media print{.bottom{display:none!important}}
+
+/* Fix: ensure the shared bottom bar spans the complete viewport */
+html,body{min-width:0!important;width:100%!important;}
+body{padding-bottom:0!important;}
+nav.bottom{position:fixed!important;inset-inline:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;max-width:none!important;min-width:100vw!important;margin:0!important;transform:none!important;box-sizing:border-box!important;z-index:2147483000!important;}
+nav.bottom>.nav{width:100%!important;max-width:540px!important;margin:0 auto!important;flex:0 0 min(540px,100%)!important;}
+nav.bottom>.nav>button{display:flex!important;visibility:visible!important;}
 </style><script src="theme.js"></script><link rel="stylesheet" href="theme.css"></head><body><main class="app">
 <header class="top"><button class="back" onclick="location.href='index.html'" aria-label="Back Home">‹</button><div><div class="brand">SkillVerse <span>BD</span></div><div class="subtitle">Smart Notes Workspace</div></div></header>
 <h1 class="heading">📝 AI Smart Notes</h1><p class="lead">তোমার পড়ার বিষয়বস্তু থেকে গুছানো নোট তৈরি করো।</p>
