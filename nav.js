@@ -15,4 +15,5 @@
     return '<button class="'+cls+'" aria-label="'+(x[1]||'Scan')+'" onclick="location.href=\''+x[2]+'\'"><svg viewBox="0 0 24 24">'+I[x[0]]+'</svg>'+(x[1]?x[1]:'')+'</button>';
   }).join('')+'</div>';
   document.body.appendChild(nav);
+  var t=document.createElement('script');t.type='module';t.src='tracker.js';document.head.appendChild(t);
 })();

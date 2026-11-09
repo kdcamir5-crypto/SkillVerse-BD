@@ -111,4 +111,4 @@ $('dlImg').onclick=async()=>dlBlob(await png(),'scan-'+Date.now()+'.png');
 $('gal').onclick=async()=>{const b=await png(),f=new File([b],'scan-'+Date.now()+'.png',{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e.name==='AbortError')return}}dlBlob(b,f.name)};
 $('savedBtn').onclick=()=>{renderList();$('sheet').hidden=false};$('sheet').onclick=e=>{if(e.target.id==='sheet')$('sheet').hidden=true};
 start();
-</script></body></html>
+</script><script type="module" src="tracker.js"></script></body></html>

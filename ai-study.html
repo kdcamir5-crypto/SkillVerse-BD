@@ -186,7 +186,7 @@ solveButton.addEventListener('click', async () => {
     }
     resultText.textContent = payload.answer || 'AI returned an empty answer. Please try again.';
     result.style.display = 'block';
-    status.textContent = '✓ Your solution is ready.';
+    status.textContent = '✓ Your solution is ready.'; if(window.svTrack)window.svTrack.solved();
     result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   } catch (error) {
     status.textContent = error.message || 'Could not connect to the AI service. Please try again.';
@@ -201,4 +201,4 @@ solveButton.addEventListener('click', async () => {
 <button style="display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;min-width:0!important;width:100%!important;height:48px!important;padding:3px 0!important;margin:0!important;border:0!important;background:transparent!important;color:#64708f!important;font:500 11px/1.2 Inter,system-ui,sans-serif!important;white-space:nowrap!important;box-shadow:none!important;" class="sv-nav-plus" onclick="location.href='scanner.html'" aria-label="Camera Scanner"><span class="sv-nav-icon">＋</span></button>
 <button style="display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;min-width:0!important;width:100%!important;height:48px!important;padding:3px 0!important;margin:0!important;border:0!important;background:transparent!important;color:#64708f!important;font:500 11px/1.2 Inter,system-ui,sans-serif!important;white-space:nowrap!important;box-shadow:none!important;" onclick="location.href='rank.html'" aria-label="Rank"><span class="sv-nav-icon">♜</span>Rank</button>
 <button style="display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;min-width:0!important;width:100%!important;height:48px!important;padding:3px 0!important;margin:0!important;border:0!important;background:transparent!important;color:#64708f!important;font:500 11px/1.2 Inter,system-ui,sans-serif!important;white-space:nowrap!important;box-shadow:none!important;" onclick="location.href='profile.html'" aria-label="Profile"><span class="sv-nav-icon">♙</span>Profile</button>
-</div></nav></body></html>
+</div></nav><script type="module" src="tracker.js"></script></body></html>
