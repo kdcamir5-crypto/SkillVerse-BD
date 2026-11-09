@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b1020">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#E9ECEF">
 <title>AI Study | SkillVerse BD</title>
 <style>
 :root{--bg:#0b1020;--panel:#121a2d;--panel2:#18233a;--line:#26334d;--text:#f2f5ff;--muted:#97a6c2;--purple:#8b5cf6;--blue:#4f8cff}
@@ -17,6 +17,24 @@
 .bottom .nav button.active{color:#b7a0ff!important}
 .bottom .nav button.active .navicon{filter:drop-shadow(0 0 7px #a78bfa66)}
 .app{padding-bottom:calc(108px + env(safe-area-inset-bottom))!important}
+@media print{.bottom{display:none!important}}
+
+/* SkillVerse BD — LearnFlow-inspired AI Study UI */
+:root{color-scheme:light;--bg:#E9ECEF;--panel:#FFFFFF;--panel2:#F8FAFC;--line:#E2E8F0;--text:#1E293B;--muted:#64748B;--purple:#6366F1;--blue:#4F75FF}
+body{background:radial-gradient(ellipse at 85% -10%,#DBEAFE 0,transparent 38%),#E9ECEF;color:#1E293B;font-family:'Plus Jakarta Sans',Inter,system-ui,sans-serif}
+.app{max-width:410px;margin:auto;padding:18px 16px calc(112px + env(safe-area-inset-bottom))!important}
+.top{gap:12px;margin-bottom:21px}.back{border:1px solid #E2E8F0;background:#fff;border-radius:13px;color:#4F75FF;box-shadow:0 3px 12px #1e293b08}.brand{color:#1E293B}.brand span{color:#6366F1}.subtitle{color:#94A3B8;letter-spacing:1px}
+.heading{font-size:22px;letter-spacing:-.5px;color:#1E293B}.lead{color:#64748B;font-size:12px;margin-bottom:18px}
+.panel{border:1px solid #E8EDF5;background:#fff;border-radius:18px;padding:15px;margin-bottom:13px;box-shadow:0 5px 16px #1e293b08}
+.label{font-size:12px;color:#1E293B;margin-bottom:9px}
+.upload{border:1px dashed #A5B4FC;background:#F5F7FF;border-radius:15px;padding:20px 12px;min-height:138px;color:#1E293B}.upload .emoji{font-size:29px}.upload strong{font-size:13px;color:#334155}.upload small{color:#64748B}.upload input{color:#64748B}
+textarea,select{color:#1E293B;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:12px;font:inherit;outline:none}textarea::placeholder{color:#94A3B8}textarea:focus,select:focus{border-color:#4F75FF;box-shadow:0 0 0 3px #4f75ff15}
+.primary{background:linear-gradient(100deg,#4F75FF,#6366F1);border-radius:13px;box-shadow:0 6px 16px #4f75ff20;color:#fff;font-weight:800}
+.notice{color:#64748B;font-size:11px}.preview{border-radius:14px;border:1px solid #E2E8F0}
+.result h3{color:#1E293B}.result p{color:#64748B}.resultbox{background:#F8FAFC;border:1px solid #E8EDF5;border-radius:13px;color:#334155;font-size:13px}
+.bottom{position:fixed!important;left:50%!important;right:auto!important;bottom:10px!important;transform:translateX(-50%);width:min(410px,calc(100% - 24px))!important;z-index:9999!important;display:flex!important;justify-content:center!important;background:rgba(255,255,255,.94)!important;backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;border:1px solid #E8EDF5!important;border-radius:22px!important;box-shadow:0 8px 30px #1e293b12!important;padding:8px 7px calc(8px + env(safe-area-inset-bottom))!important}
+.bottom .nav{width:100%!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important}.bottom .nav button{min-width:0!important;background:none!important;border:0!important;color:#94A3B8!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;padding:5px 2px!important;font:600 10px/1.2 Inter,system-ui,sans-serif!important;white-space:nowrap!important}.bottom .nav button .navicon{font-size:19px!important;line-height:1.2!important}.bottom .nav button.active{color:#4F75FF!important}.bottom .nav button.active .navicon{filter:drop-shadow(0 0 6px #4f75ff30)}
+@media(min-width:540px){.app{padding-top:24px}.bottom{width:min(410px,calc(100% - 24px))!important}}
 @media print{.bottom{display:none!important}}
 </style>
 </head>
