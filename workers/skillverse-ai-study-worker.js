@@ -327,6 +327,213 @@ async function callGemini({
   };
 }
 
+
+// =========================================
+// SAFE MATH ANSWER CACHE (Cloudflare KV)
+// Bind a KV namespace to this Worker as ANSWER_CACHE.
+// Only cache text-only arithmetic questions whose result can be verified.
+// =========================================
+
+function toAsciiDigits(value) {
+  return value.replace(/[০-৯]/g, digit =>
+    String("০১২৩৪৫৬৭৮৯".indexOf(digit))
+  );
+}
+
+function extractMathTokens(question) {
+  let text = toAsciiDigits(String(question || "").toLowerCase())
+    .replace(/[×x]/g, "*")
+    .replace(/[÷]/g, "/")
+    .replace(/[−–]/g, "-")
+    .replace(/\b(multiplied by|times)\b/g, "*")
+    .replace(/\b(plus)\b/g, "+")
+    .replace(/\b(minus)\b/g, "-")
+    .replace(/\b(divided by|over)\b/g, "/")
+    .replace(/\b(to the power of|power)\b/g, "^");
+
+  const matches = text.match(/[0-9][0-9\s.+\-*/^()%]*[0-9)]?/g) || [];
+  if (!matches.length) return null;
+
+  const candidate = matches.sort((a, b) => b.length - a.length)[0]
+    .replace(/\s+/g, "");
+
+  if (!/[+*/^()-]/.test(candidate)) return null;
+
+  const tokens = candidate.match(/\d+(?:\.\d+)?|[()+\-*/^]/g);
+  if (!tokens || tokens.join("") !== candidate) return null;
+  return tokens;
+}
+
+function parseMathExpression(tokens) {
+  let position = 0;
+
+  function primary() {
+    const token = tokens[position++];
+
+    if (token === "(") {
+      const node = expression();
+      if (tokens[position++] !== ")") throw new Error("Missing closing parenthesis");
+      return node;
+    }
+
+    if (token === "+" || token === "-") {
+      return { type: "unary", op: token, value: primary() };
+    }
+
+    if (!token || !/^\d+(?:\.\d+)?$/.test(token)) {
+      throw new Error("Invalid number");
+    }
+
+    return { type: "number", value: Number(token) };
+  }
+
+  function power() {
+    let node = primary();
+    if (tokens[position] === "^") {
+      position++;
+      node = { type: "binary", op: "^", left: node, right: power() };
+    }
+    return node;
+  }
+
+  function term() {
+    let node = power();
+    while (tokens[position] === "*" || tokens[position] === "/") {
+      const op = tokens[position++];
+      node = { type: "binary", op, left: node, right: power() };
+    }
+    return node;
+  }
+
+  function expression() {
+    let node = term();
+    while (tokens[position] === "+" || tokens[position] === "-") {
+      const op = tokens[position++];
+      node = { type: "binary", op, left: node, right: term() };
+    }
+    return node;
+  }
+
+  const tree = expression();
+  if (position !== tokens.length) throw new Error("Unexpected math token");
+  return tree;
+}
+
+function flattenMathOperator(node, operator, output = []) {
+  if (node.type === "binary" && node.op === operator) {
+    flattenMathOperator(node.left, operator, output);
+    flattenMathOperator(node.right, operator, output);
+  } else {
+    output.push(node);
+  }
+  return output;
+}
+
+function canonicalMathTree(node) {
+  if (node.type === "number") return String(node.value);
+  if (node.type === "unary") return "(" + node.op + canonicalMathTree(node.value) + ")";
+
+  if (node.op === "+" || node.op === "*") {
+    const parts = flattenMathOperator(node, node.op)
+      .map(part => canonicalMathTree(part))
+      .sort();
+    return "(" + node.op + ":" + parts.join(",") + ")";
+  }
+
+  return "(" + node.op + ":" +
+    canonicalMathTree(node.left) + "," +
+    canonicalMathTree(node.right) + ")";
+}
+
+function evaluateMathTree(node) {
+  if (node.type === "number") return node.value;
+  if (node.type === "unary") {
+    const value = evaluateMathTree(node.value);
+    return node.op === "-" ? -value : value;
+  }
+
+  const left = evaluateMathTree(node.left);
+  const right = evaluateMathTree(node.right);
+
+  switch (node.op) {
+    case "+": return left + right;
+    case "-": return left - right;
+    case "*": return left * right;
+    case "/":
+      if (right === 0) throw new Error("Division by zero");
+      return left / right;
+    case "^": return Math.pow(left, right);
+    default: throw new Error("Unsupported operator");
+  }
+}
+
+function getVerifiedMathInfo(question, language, level) {
+  try {
+    const tokens = extractMathTokens(question);
+    if (!tokens) return null;
+
+    const tree = parseMathExpression(tokens);
+    const result = evaluateMathTree(tree);
+
+    if (!Number.isFinite(result) || Math.abs(result) > 1e15) return null;
+
+    return {
+      key: "math-v1:" + language + ":" + level + ":" + canonicalMathTree(tree),
+      result: String(Number(result.toPrecision(12)))
+    };
+  } catch {
+    return null;
+  }
+}
+
+function answerConfirmsMathResult(answer, expected) {
+  const normalized = toAsciiDigits(String(answer || ""))
+    .replace(/,/g, "")
+    .replace(/[−–]/g, "-");
+
+  const escaped = expected.replace(/[.*+?^\${}()|[\]\\]/g, "\\
+export default {
+");
+  const pattern = new RegExp("(^|[^0-9.])" + escaped + "([^0-9.]|$)");
+  return pattern.test(normalized);
+}
+
+async function readAnswerCache(env, mathInfo) {
+  if (!env.ANSWER_CACHE || !mathInfo) return null;
+
+  try {
+    const saved = await env.ANSWER_CACHE.get(mathInfo.key, "json");
+    if (!saved || saved.verified !== true || saved.result !== mathInfo.result) {
+      return null;
+    }
+    return saved;
+  } catch {
+    return null;
+  }
+}
+
+async function saveVerifiedAnswerCache(env, mathInfo, answer, provider) {
+  if (!env.ANSWER_CACHE || !mathInfo) return false;
+  if (!answerConfirmsMathResult(answer, mathInfo.result)) return false;
+
+  try {
+    await env.ANSWER_CACHE.put(
+      mathInfo.key,
+      JSON.stringify({
+        answer,
+        result: mathInfo.result,
+        provider,
+        verified: true,
+        savedAt: new Date().toISOString()
+      }),
+      { expirationTtl: 60 * 60 * 24 * 90 }
+    );
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -463,6 +670,24 @@ export default {
 
     const tutorPrompt = buildTutorPrompt(question, language, level);
 
+    // Safe cache lookup: only verified, text-only arithmetic questions.
+    const mathCacheInfo = imageData
+      ? null
+      : getVerifiedMathInfo(question, language, level);
+
+    const cachedAnswer = await readAnswerCache(env, mathCacheInfo);
+    if (cachedAnswer) {
+      return response(
+        {
+          answer: cachedAnswer.answer,
+          provider: "Verified Answer Cache",
+          cacheHit: true
+        },
+        200,
+        origin
+      );
+    }
+
     // 1. GEMINI — FIRST PROVIDER (3 ATTEMPTS)
     const geminiResult = await callGemini({
       apiKey: env.GEMINI_API_KEY,
@@ -473,6 +698,7 @@ export default {
     });
 
     if (geminiResult.answer) {
+      await saveVerifiedAnswerCache(env, mathCacheInfo, geminiResult.answer, geminiResult.provider);
       return response(
         {
           answer: geminiResult.answer,
@@ -496,6 +722,7 @@ export default {
     });
 
     if (sambaResult.answer) {
+      await saveVerifiedAnswerCache(env, mathCacheInfo, sambaResult.answer, sambaResult.provider);
       return response(
         {
           answer: sambaResult.answer,
@@ -519,6 +746,7 @@ export default {
     });
 
     if (openRouterResult.answer) {
+      await saveVerifiedAnswerCache(env, mathCacheInfo, openRouterResult.answer, openRouterResult.provider);
       return response(
         {
           answer: openRouterResult.answer,
@@ -542,6 +770,7 @@ export default {
     });
 
     if (groqResult.answer) {
+      await saveVerifiedAnswerCache(env, mathCacheInfo, groqResult.answer, groqResult.provider);
       return response(
         {
           answer: groqResult.answer,
