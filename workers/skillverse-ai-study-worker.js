@@ -532,28 +532,6 @@ async function readAnswerCache(env, mathInfo) {
   }
 }
 
-async function saveVerifiedAnswerCache(env, mathInfo, answer, provider) {
-  if (!env.ANSWER_CACHE || !mathInfo) return false;
-  if (!answerConfirmsMathResult(answer, mathInfo.result)) return false;
-
-  try {
-    await env.ANSWER_CACHE.put(
-      mathInfo.key,
-      JSON.stringify({
-        answer,
-        result: mathInfo.result,
-        provider,
-        verified: true,
-        savedAt: new Date().toISOString()
-      }),
-      { expirationTtl: 60 * 60 * 24 * 90 }
-    );
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
