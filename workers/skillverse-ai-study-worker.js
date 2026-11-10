@@ -341,26 +341,22 @@ function toAsciiDigits(value) {
 }
 
 function extractMathTokens(question) {
-  let text = toAsciiDigits(String(question || "").toLowerCase())
+  // Only accept a standalone arithmetic expression.
+  // Natural-language word problems must always go to an AI provider.
+  let text = toAsciiDigits(String(question || "").trim())
     .replace(/[×x]/g, "*")
     .replace(/[÷]/g, "/")
     .replace(/[−–]/g, "-")
-    .replace(/\b(multiplied by|times)\b/g, "*")
-    .replace(/\b(plus)\b/g, "+")
-    .replace(/\b(minus)\b/g, "-")
-    .replace(/\b(divided by|over)\b/g, "/")
-    .replace(/\b(to the power of|power)\b/g, "^");
+    .replace(/\?+$/g, "")
+    .replace(/=+$/g, "")
+    .trim();
 
-  const matches = text.match(/[0-9][0-9\s.+\-*/^()%]*[0-9)]?/g) || [];
-  if (!matches.length) return null;
+  if (!text || !/^[0-9\s.+\-*/^()]+$/.test(text)) return null;
 
-  const candidate = matches.sort((a, b) => b.length - a.length)[0]
-    .replace(/\s+/g, "");
-
-  if (!/[+*/^()-]/.test(candidate)) return null;
-
-  const tokens = candidate.match(/\d+(?:\.\d+)?|[()+\-*/^]/g);
-  if (!tokens || tokens.join("") !== candidate) return null;
+  text = text.replace(/\s+/g, "");
+  const tokens = text.match(/\d+(?:\.\d+)?|[()+\-*/^]/g);
+  if (!tokens || tokens.join("") !== text) return null;
+  if (!/[+*/^()-]/.test(text)) return null;
   return tokens;
 }
 
@@ -491,11 +487,35 @@ function answerConfirmsMathResult(answer, expected) {
     .replace(/,/g, "")
     .replace(/[−–]/g, "-");
 
-  const escaped = expected.replace(/[.*+?^\${}()|[\]\\]/g, "\\
-export default {
-");
+  const escaped = expected.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const pattern = new RegExp("(^|[^0-9.])" + escaped + "([^0-9.]|$)");
   return pattern.test(normalized);
+}
+
+async function saveVerifiedAnswerCache(env, mathInfo, answer, provider) {
+  if (!env.ANSWER_CACHE || !mathInfo) return false;
+  if (!answerConfirmsMathResult(answer, mathInfo.result)) return false;
+
+  // Store a deterministic result, not provider-generated explanation text.
+  const safeAnswer = "Answer: " + mathInfo.result;
+
+  try {
+    await env.ANSWER_CACHE.put(
+      mathInfo.key,
+      JSON.stringify({
+        answer: safeAnswer,
+        result: mathInfo.result,
+        provider: "Deterministic Calculator",
+        verified: true,
+        sourceProvider: provider,
+        savedAt: new Date().toISOString()
+      }),
+      { expirationTtl: 60 * 60 * 24 * 90 }
+    );
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function readAnswerCache(env, mathInfo) {
